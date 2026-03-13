@@ -1,16 +1,18 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Book My Stay App
  * Hotel Booking Management System
  *
- * Use Case 4: Room Search & Availability Check
+ * Use Case 5: Booking Request (First-Come-First-Served)
  *
- * Demonstrates safe, read-only search of available rooms
- * without modifying inventory.
+ * Demonstrates fair handling of booking requests
+ * using a FIFO queue.
  *
- * @version 4.1
+ * @version 5.1
  */
 
 
@@ -95,14 +97,39 @@ class RoomInventory {
 }
 
 
+/* ---------- Reservation Class ---------- */
+class Reservation {
+
+    private String guestName;
+    private String roomType;
+
+    public Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public void displayReservation() {
+        System.out.println("Guest: " + guestName + " | Requested Room: " + roomType);
+    }
+}
+
+
 /* ---------- Main Application ---------- */
 public class BookMyStayApp {
 
     public static void main(String[] args) {
 
         System.out.println("=================================");
-        System.out.println("Book My Stay App - Version 4.1");
-        System.out.println("Room Search & Availability Check");
+        System.out.println("Book My Stay App - Version 5.1");
+        System.out.println("Booking Request Queue (FIFO)");
         System.out.println("=================================");
 
         // Create room objects
@@ -113,15 +140,29 @@ public class BookMyStayApp {
         // Initialize inventory
         RoomInventory inventory = new RoomInventory();
 
-        // Display room search results
-        displayAvailableRooms(new Room[] { single, doubleRoom, suite }, inventory);
+        // Display available rooms
+        displayAvailableRooms(new Room[]{single, doubleRoom, suite}, inventory);
 
-        System.out.println("\nApplication Finished.");
+        // Create booking request queue
+        Queue<Reservation> bookingQueue = new LinkedList<>();
+
+        // Simulate guest requests
+        bookingQueue.add(new Reservation("Alice", "Single Room"));
+        bookingQueue.add(new Reservation("Bob", "Double Room"));
+        bookingQueue.add(new Reservation("Charlie", "Suite Room"));
+        bookingQueue.add(new Reservation("Diana", "Single Room"));
+
+        System.out.println("\n--- Booking Requests in Queue (First-Come-First-Served) ---\n");
+
+        for (Reservation res : bookingQueue) {
+            res.displayReservation();
+        }
+
+        System.out.println("\nNote: Inventory is not modified at this stage (read-only booking queue).");
     }
 
     /**
-     * Display rooms with availability > 0
-     * without modifying the inventory (read-only)
+     * Display rooms with availability > 0 (read-only)
      */
     private static void displayAvailableRooms(Room[] rooms, RoomInventory inventory) {
 
